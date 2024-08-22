@@ -1,7 +1,7 @@
 
 # Programação para Dispositivos Móveis I
 
-### Aula ministrada na FATEC-ZL
+
 
 Bem-vindo ao repositório da disciplina Programação para Dispositivos Móveis I ministrada na FATEC-ZL!
 
