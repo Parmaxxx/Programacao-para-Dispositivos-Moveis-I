@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.EditText
+import android.widget.TextView
 
 class CalculadoraSomaActivity : Activity() {
     override fun onCreate(bundle: Bundle?) {
@@ -15,7 +16,7 @@ class CalculadoraSomaActivity : Activity() {
         val edtNum1=findViewById<EditText>(R.id.edtNumero1)
         val edtNum2=findViewById<EditText>(R.id.edtNumero2)
         val btnSomar=findViewById<Button>(R.id.btnSomar)
-        val edtResultado = findViewById<EditText>(R.id.edtResultado)
+        val edtResultado = findViewById<TextView>(R.id.edtResultado)
 
         btnSomar.setOnClickListener {
             var num1=edtNum1.text.toString().toDoubleOrNull()
@@ -26,34 +27,13 @@ class CalculadoraSomaActivity : Activity() {
             if (num2 == null){
                 num2 = 0.0
             }
-            var resultado = num1+num2
+            val resultado = num1+num2
 
 
             edtResultado.setText(resultado.toString())
             Log.v("CALCULADORA","Resultado: ${num1+num2}")
         }
 
-    }
-
-    override fun onStart() {
-        super.onStart()
-        Log.v("CALCULADORA","Activity inicada onStart()")
-    }
-
-    override fun onResume() {
-        super.onResume()
-        Log.v("CALCULADORA","Activity  onResume()")
-    }
-
-    override fun onPause() {
-        super.onPause()
-        Log.v("CALCULADORA","Activity  onPause()")
-    }
-
-    override fun onDestroy() {
-        Log.v("CALCULADORA","Activity  onDestroy()")
-
-        super.onDestroy()
     }
 
 
