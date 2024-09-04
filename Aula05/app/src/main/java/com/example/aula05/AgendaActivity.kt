@@ -51,7 +51,7 @@ class AgendaActivity : Activity() {
             """
                 {
                 "nome":"${edtNome.text}",
-                "telefone":"${edtFone.text},
+                "telefone":"${edtFone.text}",
                 "email":"${edtEmail.text}"
                 }
             """.trimIndent()
