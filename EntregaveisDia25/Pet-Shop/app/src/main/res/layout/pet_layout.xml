@@ -114,7 +114,7 @@
                 android:layout_height="wrap_content"
                 android:ems="10"
                 android:hint="Peso em Kg ex: 10,70"
-                android:inputType="number" />
+                android:inputType="number|numberDecimal" />
         </TableRow>
 
         <TableRow
