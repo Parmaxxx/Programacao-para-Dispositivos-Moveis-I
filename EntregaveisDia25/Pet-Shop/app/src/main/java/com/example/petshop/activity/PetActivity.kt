@@ -19,10 +19,8 @@ import java.time.format.DateTimeParseException
 
 class PetActivity : Activity() {
 
-    // Constante com a URL do RTDB
     private val firebaseUrl = "https://petshop-b3617-default-rtdb.firebaseio.com/pets.json"
 
-    // Variáveis de instância para os EditTexts e Buttons
     private lateinit var edtNome: EditText
     private lateinit var edtRaca: EditText
     private lateinit var edtPeso: EditText
@@ -30,10 +28,8 @@ class PetActivity : Activity() {
     private lateinit var btnGravar: Button
     private lateinit var btnPesquisar: Button
 
-    // Lista para guardar os pets registrados
     private val listaDePets = mutableListOf<Pet>()
 
-    // Criação do cliente OkHttp
     private val client = OkHttpClient()
     private val gson = Gson()
 
@@ -41,7 +37,6 @@ class PetActivity : Activity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.pet_layout)
 
-        // Recuperar os elementos do layout
         edtNome = findViewById(R.id.edtNome)
         edtRaca = findViewById(R.id.edtRaca)
         edtPeso = findViewById(R.id.edtPeso)
@@ -49,7 +44,6 @@ class PetActivity : Activity() {
         btnGravar = findViewById(R.id.btnGravar)
         btnPesquisar = findViewById(R.id.btnPesquisar)
 
-        // Programar os botões
         btnGravar.setOnClickListener {
             val pet = paraEntidade()
             pet?.let { salvarFirebase(it) }
@@ -58,29 +52,23 @@ class PetActivity : Activity() {
         btnPesquisar.setOnClickListener {
             pesquisar()
         }
-
-        // Carregar os pets ao iniciar
         carregarFirebase()
     }
 
-    // Gera um objeto do tipo Pet
     private fun paraEntidade(): Pet? {
         val nome = edtNome.text.toString()
         val raca = edtRaca.text.toString()
         val peso = edtPeso.text.toString().toFloatOrNull()
-        val nascimentoStr = edtNascimento.text.toString() // User input in dd/MM/yyyy format
+        val nascimentoStr = edtNascimento.text.toString()
 
         if (nome.isBlank() || raca.isBlank() || peso == null || nascimentoStr.isBlank()) {
             Toast.makeText(this, "Preencha todos os campos corretamente.", Toast.LENGTH_SHORT).show()
             return null
         }
 
-        // Convert dd/MM/yyyy to LocalDate
         val nascimento: LocalDate? = try {
-            // Define the formatter for Brazilian date input (dd/MM/yyyy)
             val inputFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
 
-            // Parse the user input string into a LocalDate using Brazilian format
             LocalDate.parse(nascimentoStr, inputFormatter)
 
         } catch (e: DateTimeParseException) {
@@ -92,15 +80,12 @@ class PetActivity : Activity() {
             return null
         }
 
-        // Now, convert LocalDate back to Brazilian format (dd/MM/yyyy) for saving
         val outputFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
-        val formattedDate = nascimento.format(outputFormatter)  // Format to dd/MM/yyyy
+        val formattedDate = nascimento.format(outputFormatter)
 
-        // You can now use `formattedDate` in the Brazilian format when saving
         return Pet(nome, raca, peso, formattedDate)
     }
 
-    // Popular cada EditText com os dados de um Pet
     private fun paraTela(p: Pet) {
         edtNome.setText(p.nome)
         edtRaca.setText(p.raca)
@@ -108,7 +93,6 @@ class PetActivity : Activity() {
         edtNascimento.setText(p.nascimento.toString())
     }
 
-    // Carregar pets do RTDB
     private fun carregarFirebase() {
         val request = Request.Builder()
             .url(firebaseUrl)
@@ -128,7 +112,6 @@ class PetActivity : Activity() {
 
                     val json = it.body?.string()
 
-                    // Check if the JSON is empty or null
                     if (json.isNullOrEmpty()) {
                         runOnUiThread {
                             Toast.makeText(this@PetActivity, "Nenhum dado encontrado.", Toast.LENGTH_SHORT).show()
@@ -136,19 +119,15 @@ class PetActivity : Activity() {
                         return
                     }
 
-                    // Parse JSON as a Map<String, Pet>, as Firebase stores data in a key-value format
                     val petMapType = object : TypeToken<Map<String, Pet>>() {}.type
                     val petsMap: Map<String, Pet>? = gson.fromJson(json, petMapType)
 
-                    // Ensure petsMap is not null before proceeding
                     if (petsMap == null) {
                         runOnUiThread {
                             Toast.makeText(this@PetActivity, "Erro ao carregar os dados.", Toast.LENGTH_SHORT).show()
                         }
                         return
                     }
-
-                    // Clear and populate the list with the Pets
                     listaDePets.clear()
                     listaDePets.addAll(petsMap.values)
 
@@ -161,7 +140,6 @@ class PetActivity : Activity() {
         })
     }
 
-    // Salvar um Pet no RTDB
     private fun salvarFirebase(p: Pet) {
         val json = gson.toJson(p)
         val requestBody = RequestBody.create("application/json; charset=utf-8".toMediaType(), json)
@@ -188,14 +166,14 @@ class PetActivity : Activity() {
 
                     runOnUiThread {
                         Toast.makeText(this@PetActivity, "Pet salvo com sucesso!", Toast.LENGTH_SHORT).show()
-                        carregarFirebase() // Atualizar a lista após salvar
+                        carregarFirebase()
                     }
                 }
             }
         })
     }
 
-    // Pesquisar um Pet na lista
+
     private fun pesquisar() {
         val nomeBusca = edtNome.text.toString()
         val petEncontrado = listaDePets.find { it.nome.contains(nomeBusca, ignoreCase = true) }
