@@ -2,7 +2,6 @@ package com.example.aula08.activity
 
 import android.app.Activity
 import android.os.Bundle
-import android.os.PersistableBundle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.aula08.R
@@ -10,19 +9,23 @@ import com.example.aula08.model.Contato
 import com.example.aula08.recicleview.ContatoAdapter
 
 class ContatoListActivity : Activity() {
-    override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
-        super.onCreate(savedInstanceState, persistentState)
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
         setContentView(R.layout.contato_lista_layout)
 
-        val recyclerView = findViewById<RecyclerView>(R.id.rcv_contato_lista)
-        val lista = ArrayList<Contato>()
-        lista.add(Contato("0","feomfoewf@oewm","tonico","432648322"))
+        // Recupera as extras da Intent
+        val extras = intent.extras
+        val lista: ArrayList<Contato> = if (extras != null) {
+            extras.getSerializable("lista") as? ArrayList<Contato> ?: ArrayList()
+        } else {
+            ArrayList() // Retorna uma lista vazia se não houver extras
+        }
+
+        // Configura o adapter e o RecyclerView
         val adapter = ContatoAdapter(this, lista)
+        val recyclerView = findViewById<RecyclerView>(R.id.rcv_contato_lista)
         recyclerView.adapter = adapter
-
-        recyclerView.layoutManager =LinearLayoutManager(this)
-
-
-
+        recyclerView.layoutManager = LinearLayoutManager(this)
     }
 }
