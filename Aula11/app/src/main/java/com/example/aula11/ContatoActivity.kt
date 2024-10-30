@@ -1,6 +1,7 @@
 package com.example.aula11
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -20,6 +21,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.ui.platform.LocalContext
 import com.example.aula11.ui.theme.Aula11Theme
 
 
@@ -47,12 +49,13 @@ class ContatoActivity : ComponentActivity() {
     }
 }
 
-        @Composable
-        fun TelaPrincipal(
+@Composable
+fun TelaPrincipal(
             titulo: String,
             modifier: Modifier = Modifier,
             viewModel: ContatoViewModel
         ) {
+            val context = LocalContext.current
 
     Column(modifier=Modifier.fillMaxSize()) {
         Text(
@@ -89,21 +92,25 @@ class ContatoActivity : ComponentActivity() {
         Row(modifier=Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceAround) {
             Button(onClick={ viewModel.gravar()
-
+                Toast.makeText(
+                    context,
+                    "Contato Gravado com sucesso!",
+                    Toast.LENGTH_SHORT
+                ).show()
             }) {
                 Text("Gravar")
             }
-            Button(onClick={}) {
+            Button(onClick={viewModel.carregarTodos()}) {
                 Text("Pesquisar")
             }
         }
 
-        LazyColumn() {
+        LazyColumn{
             item {
                 Text("Inicio da Lazy Column")
             }
             items(items=viewModel.lista) { contato ->
-                Card() {
+                Card{
                     Text(contato.nome)
                     Text(contato.telefone)
                 }
